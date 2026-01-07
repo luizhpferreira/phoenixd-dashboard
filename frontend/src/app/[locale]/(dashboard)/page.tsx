@@ -11,6 +11,11 @@ import {
   ChevronRight,
   Wrench,
   Link2,
+  ScrollText,
+  Terminal,
+  Server,
+  BookOpen,
+  Github,
 } from 'lucide-react';
 import {
   getNodeInfo,
@@ -22,11 +27,13 @@ import {
   type IncomingPayment,
   type OutgoingPayment,
 } from '@/lib/api';
-import { formatSats, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
+import { useCurrencyContext } from '@/components/currency-provider';
 import { useToast } from '@/hooks/use-toast';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { Link } from '@/i18n/navigation';
 import { PaymentsChart } from '@/components/payments-chart';
+import { StatCard, StatCardGrid } from '@/components/stat-card';
 import { useTranslations } from 'next-intl';
 
 interface NodeInfo {
@@ -41,6 +48,7 @@ type RecentPayment = IncomingPayment | OutgoingPayment;
 export default function OverviewPage() {
   const t = useTranslations('overview');
   const tc = useTranslations('common');
+  const { formatValue } = useCurrencyContext();
   const [nodeInfo, setNodeInfo] = useState<NodeInfo | null>(null);
   const [balance, setBalance] = useState<{ balanceSat: number; feeCreditSat: number } | null>(null);
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -126,9 +134,8 @@ export default function OverviewPage() {
             </span>
             <div className="flex items-baseline justify-center gap-1.5 mt-1">
               <span className="text-4xl font-bold text-white tabular-nums">
-                {formatSats(balance?.balanceSat || 0)}
+                {formatValue(balance?.balanceSat || 0)}
               </span>
-              <span className="text-base text-white/40">{tc('sats')}</span>
             </div>
           </div>
         </div>
@@ -192,7 +199,7 @@ export default function OverviewPage() {
                       )}
                     >
                       {isIncoming ? '+' : '-'}
-                      {formatSats(amount)}
+                      {formatValue(amount)}
                     </p>
                   </div>
                 );
@@ -223,9 +230,8 @@ export default function OverviewPage() {
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="text-4xl font-bold text-white">
-                  {formatSats(balance?.balanceSat || 0)}
+                  {formatValue(balance?.balanceSat || 0)}
                 </span>
-                <span className="text-lg text-white/50">{tc('sats')}</span>
               </div>
 
               <div className="flex gap-2 pt-2">
@@ -249,59 +255,27 @@ export default function OverviewPage() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-          <div className="glass-card rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0">
-                <p className="text-2xl font-bold">{activeChannels}</p>
-                <p className="text-xs text-muted-foreground">{t('channels')}</p>
-              </div>
-              <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Layers className="h-4 w-4 text-primary" />
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-card rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0">
-                <p className="text-2xl font-bold truncate">{formatSats(totalCapacity)}</p>
-                <p className="text-xs text-muted-foreground">{t('capacity')}</p>
-              </div>
-              <div className="h-9 w-9 rounded-xl bg-bitcoin/10 flex items-center justify-center flex-shrink-0">
-                <TrendingUp className="h-4 w-4 text-bitcoin" />
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-card rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0">
-                <p className="text-2xl font-bold text-success truncate">
-                  {formatSats(totalInbound)}
-                </p>
-                <p className="text-xs text-muted-foreground">{t('inbound')}</p>
-              </div>
-              <div className="h-9 w-9 rounded-xl bg-success/10 flex items-center justify-center flex-shrink-0">
-                <ArrowDownToLine className="h-4 w-4 text-success" />
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-card rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0">
-                <p className="text-2xl font-bold value-highlight truncate">
-                  {formatSats(balance?.feeCreditSat || 0)}
-                </p>
-                <p className="text-xs text-muted-foreground">{t('feeCredit')}</p>
-              </div>
-              <div className="h-9 w-9 rounded-xl bg-lightning/10 flex items-center justify-center flex-shrink-0">
-                <Zap className="h-4 w-4 text-lightning" />
-              </div>
-            </div>
-          </div>
-        </div>
+        <StatCardGrid columns={4}>
+          <StatCard label={t('channels')} value={activeChannels} icon={Layers} variant="primary" />
+          <StatCard
+            label={t('capacity')}
+            value={formatValue(totalCapacity)}
+            icon={TrendingUp}
+            variant="warning"
+          />
+          <StatCard
+            label={t('inbound')}
+            value={formatValue(totalInbound)}
+            icon={ArrowDownToLine}
+            variant="success"
+          />
+          <StatCard
+            label={t('feeCredit')}
+            value={formatValue(balance?.feeCreditSat || 0)}
+            icon={Zap}
+            variant="warning"
+          />
+        </StatCardGrid>
 
         {/* Payment Activity Chart */}
         <PaymentsChart incomingPayments={allIncoming} outgoingPayments={allOutgoing} />
@@ -368,11 +342,19 @@ export default function OverviewPage() {
         <div className="grid gap-4 lg:grid-cols-5">
           {/* Node Info */}
           <div className="lg:col-span-2 glass-card rounded-2xl p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Zap className="h-4 w-4 text-primary" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Zap className="h-4 w-4 text-primary" />
+                </div>
+                <h3 className="font-semibold text-sm">{t('nodeInfo')}</h3>
               </div>
-              <h3 className="font-semibold text-sm">{t('nodeInfo')}</h3>
+              <Link
+                href="/node"
+                className="text-xs text-primary hover:underline flex items-center gap-0.5"
+              >
+                {tc('viewAll')} <ChevronRight className="h-3 w-3" />
+              </Link>
             </div>
 
             <div className="mb-3">
@@ -392,7 +374,7 @@ export default function OverviewPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 mb-3">
               <div className="rounded-xl bg-white/5 p-3">
                 <span className="text-[10px] text-muted-foreground block">{t('network')}</span>
                 <div className="flex items-center gap-1.5 mt-0.5">
@@ -406,6 +388,86 @@ export default function OverviewPage() {
                   {nodeInfo?.version}
                 </span>
               </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              <Link
+                href="/node?tab=info"
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
+              >
+                <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <Server className="h-4 w-4 text-primary" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                  {t('details')}
+                </span>
+              </Link>
+              <Link
+                href="/node?tab=logs"
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
+              >
+                <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                  <ScrollText className="h-4 w-4 text-blue-500" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                  {t('logs')}
+                </span>
+              </Link>
+              <Link
+                href="/node?tab=terminal"
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
+              >
+                <div className="h-8 w-8 rounded-lg bg-green-500/10 flex items-center justify-center group-hover:bg-green-500/20 transition-colors">
+                  <Terminal className="h-4 w-4 text-green-500" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                  {t('terminal')}
+                </span>
+              </Link>
+            </div>
+
+            {/* External Links */}
+            <div className="grid grid-cols-3 gap-2">
+              <a
+                href="https://phoenix.acinq.co/server/api"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
+              >
+                <div className="h-8 w-8 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                  <BookOpen className="h-4 w-4 text-purple-500" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                  {tc('phoenixdDocs')}
+                </span>
+              </a>
+              <a
+                href="https://github.com/ACINQ/phoenixd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
+              >
+                <div className="h-8 w-8 rounded-lg bg-gray-500/10 flex items-center justify-center group-hover:bg-gray-500/20 transition-colors">
+                  <Github className="h-4 w-4 text-gray-400" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                  {tc('phoenixd')}
+                </span>
+              </a>
+              <a
+                href="https://github.com/MiguelMedeiros/phoenixd-dashboard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group"
+              >
+                <div className="h-8 w-8 rounded-lg bg-gray-500/10 flex items-center justify-center group-hover:bg-gray-500/20 transition-colors">
+                  <Github className="h-4 w-4 text-gray-400" />
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                  {tc('dashboard')}
+                </span>
+              </a>
             </div>
           </div>
 
@@ -471,7 +533,7 @@ export default function OverviewPage() {
                         )}
                       >
                         {isIncoming ? '+' : '-'}
-                        {formatSats(amount)}
+                        {formatValue(amount)}
                       </p>
                     </div>
                   );

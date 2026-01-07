@@ -5,16 +5,24 @@
 <h1 align="center">Phoenixd Dashboard</h1>
 
 <p align="center">
-  <strong>A beautiful, modern dashboard for managing your <a href="https://github.com/ACINQ/phoenixd">phoenixd</a> Lightning node</strong>
+  <strong>A modern, self-hosted dashboard for your <a href="https://github.com/ACINQ/phoenixd">phoenixd</a> Lightning node</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Bitcoin-Lightning-orange?style=for-the-badge&logo=bitcoin" alt="Bitcoin Lightning">
-  <img src="https://img.shields.io/badge/Docker-ready-blue?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Ready">
-  <img src="https://img.shields.io/badge/PWA-ready-purple?style=for-the-badge&logo=pwa" alt="PWA Ready">
+  <a href="#features">Features</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#documentation">Docs</a> •
+  <a href="#screenshots">Screenshots</a>
 </p>
 
----
+<p align="center">
+  <img src="https://img.shields.io/badge/Bitcoin-Lightning-F7931A?style=flat-square&logo=bitcoin&logoColor=white" alt="Bitcoin Lightning">
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Ready">
+  <img src="https://img.shields.io/badge/PWA-Installable-5A0FC8?style=flat-square&logo=pwa&logoColor=white" alt="PWA Ready">
+  <img src="https://img.shields.io/github/license/MiguelMedeiros/phoenixd-dashboard?style=flat-square" alt="License">
+</p>
+
+<br>
 
 <p align="center">
 
@@ -22,126 +30,120 @@ https://github.com/user-attachments/assets/494d58b8-1e23-473e-8aca-74a2705ac33e
 
 </p>
 
----
+<br>
 
 ## Features
 
-✓ **Receive** · Bolt11 invoices, Bolt12 offers, Lightning Address, QR codes
+✅ **Send & Receive** — Bolt11, Bolt12 offers, Lightning Address, On-chain
 
-✓ **Send** · Pay invoices, offers, LN addresses, on-chain transactions
+✅ **Dashboard** — Real-time balance, channel stats, payment activity
 
-✓ **Dashboard** · Real-time balance, channels, payment activity chart
+✅ **History** — Full payment history with filters & CSV export
 
-✓ **History** · Full payment history with filters & CSV export
+✅ **Tools** — Decode invoices, liquidity fees, LNURL support
 
-✓ **Tools** · Decode invoices, estimate liquidity fees, LNURL support
+✅ **Multi-Currency** — Display in 10+ fiat currencies
 
-✓ **PWA** · Install as native app — no app store required!
+✅ **PWA** — Install as native app on any device
 
-✓ **Remote** · Access from anywhere via Tailscale VPN
+✅ **Remote Access** — Secure access via Tailscale VPN
 
-✓ **Tor** · Optional hidden service for maximum privacy
+✅ **Tor Support** — Optional hidden service for privacy
 
----
+<br>
 
 ## Quick Start
 
 ```bash
+# Clone the repository
 git clone https://github.com/MiguelMedeiros/phoenixd-dashboard
 cd phoenixd-dashboard
+
+# Run the setup script
 ./scripts/setup.sh
+
+# Open in your browser
 open http://localhost:3000
 ```
 
----
+> **Note:** Requires Docker and Docker Compose. See [Installation](docs/installation.md) for detailed instructions.
 
-## 📚 Documentation
+<br>
 
-<table>
-<tr>
-<td width="50%" valign="top">
+## Documentation
 
-### 🚀 Getting Started
+### Getting Started
 
-- **[Installation](docs/installation.md)** - Docker & local setup
-- **[Configuration](docs/configuration.md)** - Environment & networks
+- 📦 [**Installation**](docs/installation.md) — Docker setup, local development, and requirements
+- ⚙️ [**Configuration**](docs/configuration.md) — Environment variables, network modes, and options
 
-</td>
-<td width="50%" valign="top">
+### Mobile & Remote Access
 
-### 📱 Mobile & Remote
+- 📱 [**PWA Installation**](docs/pwa-install.md) — Install on iOS/Android without app stores
+- 🌐 [**Remote Access**](docs/mobile-wallet-setup.md) — Secure remote access with Tailscale VPN
 
-- **[PWA Install](docs/pwa-install.md)** - Your phone, no app store
-- **[Remote Access](docs/mobile-wallet-setup.md)** - Tailscale VPN setup
+### Security & API
 
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
+- 💾 [**Backup & Recovery**](docs/backup-recovery.md) — Protect your funds with proper backups
+- 🔌 [**API Reference**](docs/api.md) — REST endpoints and WebSocket events
 
-### 🔐 Security
-
-- **[Backup & Recovery](docs/backup-recovery.md)** - Protect your sats
-
-</td>
-<td width="50%" valign="top">
-
-### 🔌 Developers
-
-- **[API Reference](docs/api.md)** - REST & WebSocket
-
-</td>
-</tr>
-</table>
-
----
+<br>
 
 ## Screenshots
 
 <details>
-<summary><strong>📥 Receive Payments</strong></summary>
+<summary><strong>Desktop Dashboard</strong></summary>
+<br>
 <p align="center">
-  <img src="docs/screenshots/dashboard-receive.png" alt="Receive" width="800">
+  <img src="docs/screenshots/dashboard-overview-desktop.png" alt="Dashboard Overview" width="800">
 </p>
 </details>
 
 <details>
-<summary><strong>📊 Channel Management</strong></summary>
+<summary><strong>Receive Payments</strong></summary>
+<br>
 <p align="center">
-  <img src="docs/screenshots/dashboard-channels.png" alt="Channels" width="800">
+  <img src="docs/screenshots/dashboard-receive.png" alt="Receive Payments" width="800">
 </p>
 </details>
 
 <details>
-<summary><strong>📱 Mobile PWA</strong></summary>
+<summary><strong>Channel Management</strong></summary>
+<br>
 <p align="center">
-  <img src="docs/screenshots/pwa-mobile-home.png" alt="Mobile" width="300">
-  <img src="docs/screenshots/pwa-mobile-receive-qr.png" alt="Receive QR" width="300">
+  <img src="docs/screenshots/dashboard-channels.png" alt="Channel Management" width="800">
 </p>
 </details>
 
----
+<details>
+<summary><strong>Mobile PWA</strong></summary>
+<br>
+<p align="center">
+  <img src="docs/screenshots/pwa-mobile-home.png" alt="Mobile Home" width="280">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/pwa-mobile-receive-qr.png" alt="Mobile Receive" width="280">
+</p>
+</details>
+
+<br>
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
+<br>
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+<br>
 
 ---
 
-## ⚠️ Disclaimer
-
-This software is provided "as is" without warranty. Use at your own risk. Always backup your seed phrase and test with small amounts first.
-
-**Mainnet = Real funds!** ⚡
+<p align="center">
+  <strong>⚠️ Disclaimer</strong><br>
+  <sub>This software is provided "as is" without warranty. Use at your own risk.<br>
+  Always backup your seed phrase and test with small amounts first.<br>
+  <strong>Mainnet = Real funds!</strong> ⚡</sub>
+</p>
